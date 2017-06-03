@@ -12,25 +12,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-class DrawGraph
-{
-	private List<List<String>> adjList = new ArrayList<List<String>>();
-	private LinkedList installedPrograms = new LinkedList();
-	public DrawGraph()		//Constructor
-	{
-		//adjList = new ArrayList<List<String>>();
-		AddRow();
-	}
-	
-	public void AddRow()
-	{
-		adjList.add(new ArrayList<String>());
-	}
-}
+//class LinkedList
+//{
+//	String name;
+//	String installType;
+//	
+//	LinkedList next;
+//	
+//	public LinkedList()
+//	{
+//		next = null;
+//	}
+//}
 
 public class DepInstall {
+	//private LinkedList head = null;
 	
 	private List<List<String>> adjList = new ArrayList<List<String>>();
+	private LinkedList installedPrograms = new LinkedList();
 	private int n = 0;	// Stores the current filled part of adjList
 	public final Integer MAXCOMS = 1000;
 	
@@ -40,11 +39,6 @@ public class DepInstall {
 		// TODO
 	}
 	
-//	public String[] split(String command)
-//	{
-//		return command.split("\\s");
-//	}
-	
 	public void Graph(String command)
 	{
 		 //adjList = new ArrayList<List<String>>();
@@ -52,25 +46,7 @@ public class DepInstall {
 		adjList.add(new ArrayList<String>());
 		adjList.set(n, new ArrayList<String>());
 		
-		//if(adjList.get(n) == null)
-			//adjList.ensureCapacity();
-		//adjList.get(0).add(new String ("A"));	//works
-		//adjList.get(0).add("0");//set(0,"a");	//seems to work as well
-		
 		String[] a = command.split("\\s");
-		
-//		for(int i = 0; i < a.length; i++)
-//			System.out.println("String: "+a[i]);
-//		System.out.println("END");
-		
-//		for (int i = 0; i < adjList.size(); i++)
-//		{
-//			if (adjList.get(i) == null)
-//				
-//		}
-		
-		//if (a.length > 9)
-		//adjList.add(new ArrayList<String>());
 		
 		for (int i = 1; i < a.length; i++)
 		{
@@ -87,28 +63,48 @@ public class DepInstall {
 		return line.split("\\s");
 	}
 	
-	public void install(String target, int row)
+	public void install(String target)
 	{
-		for(int i = 0; i < adjList.size() && row < adjList.get(i).size(); i++)											//Loops the list column till null
+		if (installedPrograms.contains(target))// && check if install is implicit or explicit if implicit don't print, if explicit print)
+		{
+			System.out.println("   "+target+" is already installed");
+			return;
+		}
+		
+		for(int column = 0; column < adjList.size(); column++)											//Loops the list column till null
 		{
 			//System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
-			if (adjList.get(i).get(0).equals(target))									//Checks if column i, row 0 is equal to the dependency target
+			if (adjList.get(column).get(0).equals(target))									//Checks if column i, row 0 is equal to the dependency target
 			{
+				for (int rows = adjList.get(column).size()-1; rows > 0; rows--)
+				{
+					//System.out.println("size: "+ adjList.get(column).size());
+					install(adjList.get(column).get(rows));								//If target is found, recusrse into the method again but this time finding row+1 as the target
+					
+				}
+				//row++;
 //				System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
-				install(adjList.get(i).get(row), row = row +1);								//If target is found, recusrse into the method again but this time finding row+1 as the target
+				
 				//row++;
 				//row = 0;
 //				System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
-				System.out.println("   Installing "+adjList.get(i).get(row));			//If target is not found, print the current item
+				
 				//System.out.println(row);
 			}
-			row=0;
+			//row=0;
 			
 		}
-		System.out.println("   Installing "+target);									//
+		System.out.println("   Installing "+target);
+		
+		if (!installedPrograms.contains(target))
+			installedPrograms.add(target);
+		//for(int i = 0; i < installedPrograms.size(); i++)
+		//{
+		//System.out.println(installedPrograms);
+		//}
 	}
 	
-	public void foundDepend()
+	public void setup()
 	{
 		//System.out.println(adjList.get(i));
 	}
@@ -121,7 +117,7 @@ public class DepInstall {
 //			return;
 //		}
 		
-		for (int i = 0; i <= N; i++)
+		for (int i = 0; i < N; i++)
 		{
 			if (commands.get(i).equals("END"))
 				break;
@@ -135,7 +131,7 @@ public class DepInstall {
 			else if (commands.get(i).contains("INSTALL"))
 			{
 				System.out.println("INSTALL "+ split(commands.get(i))[1]);//commands.get(i));
-				install(split(commands.get(i))[1], 0);
+				install(split(commands.get(i))[1]);
 				//System.out.println(split(commands.get(i))[1]);
 			}
 			else if (commands.get(i).contains("REMOVE"))
@@ -144,7 +140,9 @@ public class DepInstall {
 			}
 			else
 			{
-				//List all the currently installed modules
+				System.out.println("LIST");
+				for(int j = 0; j < installedPrograms.size(); j++)
+					System.out.println("   "+installedPrograms.get(j));//List all the currently installed modules
 			}
 			//i++;
 		}
@@ -227,7 +225,7 @@ public class DepInstall {
 		
 		DepInstall d = new DepInstall();
 		Vector<String> inCommands = null;
-		String PATH = "E:\\Workspace\\Install\\src\\data\\";
+		String PATH = "C:\\Users\\Matthew\\workspace\\Install\\src\\data\\";
 		// change to your own path
 		
 		Integer N = d.MAXCOMS;
