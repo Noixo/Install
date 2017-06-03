@@ -12,18 +12,31 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-class node
+class DrawGraph
 {
+	private List<List<String>> adjList = new ArrayList<List<String>>();
+	private LinkedList installedPrograms = new LinkedList();
+	public DrawGraph()		//Constructor
+	{
+		//adjList = new ArrayList<List<String>>();
+		AddRow();
+	}
 	
+	public void AddRow()
+	{
+		adjList.add(new ArrayList<String>());
+	}
 }
 
 public class DepInstall {
-	public ArrayList<ArrayList<String>> adjList = new ArrayList<ArrayList<String>>();
 	
+	private List<List<String>> adjList = new ArrayList<List<String>>();
+	private int n = 0;	// Stores the current filled part of adjList
 	public final Integer MAXCOMS = 1000;
 	
 
 	public DepInstall() {
+		//adjList.add(new ArrayList<String>());
 		// TODO
 	}
 	
@@ -34,13 +47,59 @@ public class DepInstall {
 	
 	public void Graph(String command)
 	{
-		//adjList.add("");
+		 //adjList = new ArrayList<List<String>>();
+
+		adjList.add(new ArrayList<String>());
+		adjList.set(n, new ArrayList<String>());
+		
+		//if(adjList.get(n) == null)
+			//adjList.ensureCapacity();
+		//adjList.get(0).add(new String ("A"));	//works
+		//adjList.get(0).add("0");//set(0,"a");	//seems to work as well
+		
 		String[] a = command.split("\\s");
+		
+//		for(int i = 0; i < a.length; i++)
+//			System.out.println("String: "+a[i]);
+//		System.out.println("END");
+		
+//		for (int i = 0; i < adjList.size(); i++)
+//		{
+//			if (adjList.get(i) == null)
+//				
+//		}
+		
+		//if (a.length > 9)
+		//adjList.add(new ArrayList<String>());
+		
 		for (int i = 1; i < a.length; i++)
 		{
-			adjList.get(adjList.size()).set(i, a[i]);
-			System.out.println(adjList.get(i));
+			adjList.get(n).add(a[i]);
+			//adjList.get(i).set(i, a[i]);
+			//System.out.println(adjList.get(n));
 		}
+		n++;
+	}
+	
+	public String[] split(String line)
+	{
+		
+		return line.split("\\s");
+	}
+	
+	public void install(String command)
+	{
+		String[] a = split(command);
+		for(int i = 0; i < adjList.size(); i++)
+		{
+			//System.out.println("Memes");
+			if (adjList.contains(a[1]))
+			{
+				System.out.println("dependency found");
+			}
+		}
+		
+		System.out.println("   installing "+a[1]);
 	}
 	
 	public void runNCommands (Vector<String> commands, Integer N) {
@@ -52,15 +111,18 @@ public class DepInstall {
 			return;
 		}
 		
-		for (int i = 0; i < N; i++)
+		for (int i = 0; i < N || commands.get(i).contains("END"); i++)
 		{
 			if (commands.get(i).contains("DEPEND"))
 			{
+				System.out.println(commands.get(i));
 				Graph(commands.get(i));
+				//System.out.println(commands.get(i));
 			}
 			else if (commands.get(i).contains("INSTALL"))
 			{
-				
+				System.out.println("INSTALL "+ split(commands.get(i))[1]);//commands.get(i));
+				install(commands.get(i));
 			}
 			else if (commands.get(i).contains("REMOVE"))
 			{
@@ -70,7 +132,7 @@ public class DepInstall {
 			{
 				//List all the currently installed modules
 			}
-			i++;
+			//i++;
 		}
 		//if (commands)
 		// PRE: commands contains set of commands read in by readCommandsFromFile()
@@ -142,6 +204,12 @@ public class DepInstall {
 
 
 	public static void main(String[] args) {
+		
+//		List<List<String>> adjList = new ArrayList<List<String>>();
+//		adjList.add(new ArrayList<String>());
+//		adjList.get(0).add(new String ("A"));	//works
+//		adjList.get(0).add("0");//set(0,"a");	//seems to work as well
+		
 		
 		DepInstall d = new DepInstall();
 		Vector<String> inCommands = null;
