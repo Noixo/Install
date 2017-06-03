@@ -87,32 +87,45 @@ public class DepInstall {
 		return line.split("\\s");
 	}
 	
-	public void install(String command)
+	public void install(String target, int row)
 	{
-		String[] a = split(command);
-		for(int i = 0; i < adjList.size(); i++)
+		for(int i = 0; i < adjList.size() && row < adjList.get(i).size(); i++)											//Loops the list column till null
 		{
-			//System.out.println("Memes");
-			if (adjList.contains(a[1]))
+			//System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
+			if (adjList.get(i).get(0).equals(target))									//Checks if column i, row 0 is equal to the dependency target
 			{
-				System.out.println("dependency found");
+//				System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
+				install(adjList.get(i).get(row), row = row +1);								//If target is found, recusrse into the method again but this time finding row+1 as the target
+				//row++;
+				//row = 0;
+//				System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
+				System.out.println("   Installing "+adjList.get(i).get(row));			//If target is not found, print the current item
+				//System.out.println(row);
 			}
+			row=0;
+			
 		}
-		
-		System.out.println("   installing "+a[1]);
+		System.out.println("   Installing "+target);									//
+	}
+	
+	public void foundDepend()
+	{
+		//System.out.println(adjList.get(i));
 	}
 	
 	public void runNCommands (Vector<String> commands, Integer N) {
 		//System.out.println(commands);//).get(1));
-		System.out.println("1");
 		
-		if (commands == null || commands.isEmpty())
-		{
-			return;
-		}
+//		if (commands == null || commands.isEmpty())
+//		{
+//			return;
+//		}
 		
-		for (int i = 0; i < N || commands.get(i).contains("END"); i++)
+		for (int i = 0; i <= N; i++)
 		{
+			if (commands.get(i).equals("END"))
+				break;
+	
 			if (commands.get(i).contains("DEPEND"))
 			{
 				System.out.println(commands.get(i));
@@ -122,7 +135,8 @@ public class DepInstall {
 			else if (commands.get(i).contains("INSTALL"))
 			{
 				System.out.println("INSTALL "+ split(commands.get(i))[1]);//commands.get(i));
-				install(commands.get(i));
+				install(split(commands.get(i))[1], 0);
+				//System.out.println(split(commands.get(i))[1]);
 			}
 			else if (commands.get(i).contains("REMOVE"))
 			{
@@ -213,14 +227,14 @@ public class DepInstall {
 		
 		DepInstall d = new DepInstall();
 		Vector<String> inCommands = null;
-		String PATH = "C:\\Users\\Matthew\\workspace\\DepInstallStudent\\src\\data\\";
+		String PATH = "E:\\Workspace\\Install\\src\\data\\";
 		// change to your own path
 		
 		Integer N = d.MAXCOMS;
 		//Integer N = 8;
 		
 		try {
-			inCommands = d.readCommandsFromFile(PATH+"sample_D2a.in");
+			inCommands = d.readCommandsFromFile(PATH+"sample_P1.in");//sample_D2a.in");
 		}
 		catch (IOException e) {
 			System.out.println("in exception: " + e);

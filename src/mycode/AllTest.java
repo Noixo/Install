@@ -12,7 +12,7 @@ import java.io.*;
 
 public class AllTest {
 
-	String PATH = "C:\\Users\\Matthew\\workspace\\DepInstallStudent\\src\\data\\";
+	String PATH = "E:\\Workspace\\Install\\src\\data\\";
 	// change to your own path
 	
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
