@@ -87,28 +87,33 @@ public class DepInstall {
 		}
 	}
 	
-	public void remove(String target)
+	public void remove(String target, int currentColumn)
 	{
 		for(int column = 0; column < adjList.size(); column++)											//Loops the list column till null
 		{
 			//System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
 			for (int rows = adjList.get(column).size()-1; rows > 0; rows--)
 			{
-				if (adjList.get(column).get(0).contains(target) && explicitInstall.contains(target))
+				if(adjList.get(column).get(rows).contains(target) && currentColumn != column)
 				{
-					remove(adjList.get(column).get(rows));
+					System.out.println("   "+target+" is still needed");
+					return;										//Break if dependency is found in a row
+				}
+				if (adjList.get(column).get(0).contains(target))// && explicitInstall.contains(target))	//check column
+				{
+					remove(adjList.get(column).get(rows),column);
 					
 					//System.out.println("Exited at: "+target);
 				}
 			}						//If target is found, recusrse into the method again but this time finding row+1 as the target
 		}
-		//if()
-		if(installedPrograms.contains(target))
-		{
-			System.out.println("   Removing "+target);
-			adjList.remove(target);
-			explicitInstall.remove(target);
-		}
+		System.out.println("   Removing "+target);
+//		if(installedPrograms.contains(target) )
+//		{
+//			System.out.println("   Removing "+target);
+//			adjList.remove(target);
+//			explicitInstall.remove(target);
+//		}
 		
 	}
 	
@@ -162,7 +167,7 @@ public class DepInstall {
 				}
 				else
 				{
-					remove(split(commands.get(i))[1]);
+					remove(split(commands.get(i))[1],10001);
 				}
 			}
 			else
@@ -252,7 +257,7 @@ public class DepInstall {
 		
 		DepInstall d = new DepInstall();
 		Vector<String> inCommands = null;
-		String PATH = "C:\\Users\\Matthew\\workspace\\Install\\src\\data\\";
+		String PATH = "E:\\Workspace\\Install\\src\\data\\";
 		// change to your own path
 		
 		Integer N = d.MAXCOMS;
