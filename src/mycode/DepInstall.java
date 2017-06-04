@@ -30,6 +30,8 @@ public class DepInstall {
 	
 	private List<List<String>> adjList = new ArrayList<List<String>>();
 	private LinkedList installedPrograms = new LinkedList();
+	private LinkedList explicitInstall = new LinkedList();
+	
 	private int n = 0;	// Stores the current filled part of adjList
 	public final Integer MAXCOMS = 1000;
 	
@@ -64,13 +66,7 @@ public class DepInstall {
 	}
 	
 	public void install(String target)
-	{
-		if (installedPrograms.contains(target))// && check if install is implicit or explicit if implicit don't print, if explicit print)
-		{
-			System.out.println("   "+target+" is already installed");
-			return;
-		}
-		
+	{	
 		for(int column = 0; column < adjList.size(); column++)											//Loops the list column till null
 		{
 			//System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
@@ -82,26 +78,38 @@ public class DepInstall {
 					install(adjList.get(column).get(rows));								//If target is found, recusrse into the method again but this time finding row+1 as the target
 					
 				}
-				//row++;
-//				System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
-				
-				//row++;
-				//row = 0;
-//				System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
-				
-				//System.out.println(row);
 			}
-			//row=0;
-			
 		}
-		System.out.println("   Installing "+target);
-		
 		if (!installedPrograms.contains(target))
+		{
+			System.out.println("   Installing "+target);
 			installedPrograms.add(target);
-		//for(int i = 0; i < installedPrograms.size(); i++)
-		//{
-		//System.out.println(installedPrograms);
-		//}
+		}
+	}
+	
+	public void remove(String target)
+	{
+		for(int column = 0; column < adjList.size(); column++)											//Loops the list column till null
+		{
+			//System.out.println("Current row "+row+" Current size: "+adjList.get(i).size());
+			for (int rows = adjList.get(column).size()-1; rows > 0; rows--)
+			{
+				if (adjList.get(column).get(0).contains(target) && explicitInstall.contains(target))
+				{
+					remove(adjList.get(column).get(rows));
+					
+					//System.out.println("Exited at: "+target);
+				}
+			}						//If target is found, recusrse into the method again but this time finding row+1 as the target
+		}
+		//if()
+		if(installedPrograms.contains(target))
+		{
+			System.out.println("   Removing "+target);
+			adjList.remove(target);
+			explicitInstall.remove(target);
+		}
+		
 	}
 	
 	public void setup()
@@ -130,13 +138,32 @@ public class DepInstall {
 			}
 			else if (commands.get(i).contains("INSTALL"))
 			{
+				if (!explicitInstall.contains(split(commands.get(i))[1]))
+					explicitInstall.add(split(commands.get(i))[1]);
+				//System.out.println(explicitInstall);
 				System.out.println("INSTALL "+ split(commands.get(i))[1]);//commands.get(i));
+				
+				if(installedPrograms.contains(split(commands.get(i))[1]))
+				{
+					System.out.println("   "+split(commands.get(i))[1]+ " is already installed");
+					//return;
+				}
+				//explicitInstall.add(split(commands.get(i))[1]);
 				install(split(commands.get(i))[1]);
 				//System.out.println(split(commands.get(i))[1]);
 			}
 			else if (commands.get(i).contains("REMOVE"))
 			{
+				System.out.println(commands.get(i));
+				if(!installedPrograms.contains(split(commands.get(i))[1]))
+				{
+					System.out.println("   "+split(commands.get(i))[1]+" is not installed");
 				
+				}
+				else
+				{
+					remove(split(commands.get(i))[1]);
+				}
 			}
 			else
 			{
